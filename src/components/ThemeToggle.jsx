@@ -21,15 +21,15 @@ export function ThemeToggle() {
     return (
         <button
             onClick={toggleTheme}
-            className="p-2 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors relative overflow-hidden"
+            className="p-3 md:p-4 rounded-full bg-secondary/80 backdrop-blur-sm text-secondary-foreground hover:bg-secondary transition-all duration-300 relative overflow-hidden shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 min-w-[48px] min-h-[48px] flex items-center justify-center"
             aria-label="Toggle theme"
         >
             <motion.div
                 initial={false}
                 animate={{ rotate: theme === 'dark' ? 180 : 0 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
             >
-                {theme === 'dark' ? <Moon size={20} /> : <Sun size={20} />}
+                {theme === 'dark' ? <Moon size={24} /> : <Sun size={24} />}
             </motion.div>
         </button>
     );

@@ -15,13 +15,13 @@ const App = () => {
     const [activeGame, setActiveGame] = useState('8ball');
 
     const games = [
-        { id: '8ball', name: 'Magic 8 Ball', icon: Sparkles, color: 'from-purple-500 to-pink-500' },
-        { id: 'coin', name: 'Coin Flip', icon: Coins, color: 'from-yellow-500 to-orange-500' },
-        { id: 'dice', name: 'Dice Roll', icon: Dice6, color: 'from-blue-500 to-cyan-500' },
-        { id: 'lottery', name: 'Lottery Numbers', icon: Ticket, color: 'from-green-500 to-teal-500' },
-        { id: 'cookie', name: 'Fortune Cookie', icon: Cookie, color: 'from-amber-500 to-yellow-500' },
-        { id: 'love', name: 'Love Calculator', icon: Heart, color: 'from-red-500 to-pink-500' },
-        { id: 'random', name: 'Random Choice', icon: Shuffle, color: 'from-emerald-500 to-green-500' }
+        { id: '8ball', name: 'Magic 8 Ball', icon: Sparkles, color: 'border-purple-500' },
+        { id: 'coin', name: 'Coin Flip', icon: Coins, color: 'border-amber-500' },
+        { id: 'dice', name: 'Dice Roll', icon: Dice6, color: 'border-blue-500' },
+        { id: 'lottery', name: 'Lottery Numbers', icon: Ticket, color: 'border-emerald-500' },
+        { id: 'cookie', name: 'Fortune Cookie', icon: Cookie, color: 'border-amber-500' },
+        { id: 'love', name: 'Love Calculator', icon: Heart, color: 'border-pink-500' },
+        { id: 'random', name: 'Random Choice', icon: Shuffle, color: 'border-green-500' }
     ];
 
     const renderGameContent = () => {
@@ -37,29 +37,25 @@ const App = () => {
         }
     };
 
-    const activeColor = games.find(g => g.id === activeGame)?.color || 'from-gray-500 to-gray-700';
+    const activeBorderColor = games.find(g => g.id === activeGame)?.color || 'border-gray-500';
 
     return (
-        <div className="min-h-screen bg-background text-foreground transition-colors duration-500 overflow-hidden">
-            {/* Dynamic Background */}
-            <div className={`fixed inset-0 bg-gradient-to-br ${activeColor} opacity-10 transition-colors duration-700 pointer-events-none`} />
-            <div className="fixed inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none mix-blend-overlay" />
-
-            <div className="container mx-auto px-4 py-8 max-w-7xl relative z-10">
+        <div className="min-h-screen bg-background text-foreground overflow-x-hidden transition-colors duration-300">
+            <div className="container mx-auto px-6 py-6 max-w-7xl relative">
                 {/* Header */}
-                <header className="flex flex-col md:flex-row items-center justify-between mb-8 gap-6">
-                    <div className="text-center md:text-left">
-                        <h1 className="text-5xl md:text-7xl font-heading font-black bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 mb-2 tracking-tight drop-shadow-sm">
+                <header className="flex items-center justify-between mb-8">
+                    <div>
+                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground tracking-tight">
                             Chance Master
                         </h1>
-                        <p className="text-muted-foreground text-lg font-medium">
+                        <p className="text-muted-foreground text-base md:text-lg font-medium mt-1">
                             Your ultimate guide to fortune and randomness
                         </p>
                     </div>
                     <ThemeToggle />
                 </header>
 
-                <div className="flex flex-col lg:flex-row gap-8 h-[calc(100vh-200px)] min-h-[600px]">
+                <div className="flex flex-col lg:flex-row gap-6">
                     <Sidebar
                         games={games}
                         activeGame={activeGame}
@@ -67,27 +63,21 @@ const App = () => {
                     />
 
                     {/* Main Game Area */}
-                    <div className="lg:w-3/4 h-full">
-                        <motion.div
-                            layout
-                            className="bg-card/40 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-2xl h-full relative overflow-hidden ring-1 ring-white/20"
-                        >
-                            {/* Inner Glow */}
-                            <div className={`absolute inset-0 bg-gradient-to-br ${activeColor} opacity-5 pointer-events-none transition-colors duration-700`} />
-
+                    <div className="flex-1 w-full lg:w-auto min-h-[550px]">
+                        <div className={`bg-card/70 backdrop-blur-xl border-4 ${activeBorderColor} rounded-3xl shadow-xl h-full relative overflow-hidden transition-all duration-300`}>
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={activeGame}
-                                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 1.05, filter: 'blur(10px)' }}
-                                    transition={{ duration: 0.4, ease: "circOut" }}
-                                    className="h-full w-full p-8 overflow-y-auto scrollbar-hide"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: 0.25, ease: "easeInOut" }}
+                                    className="h-full w-full p-8 md:p-10 lg:p-12 overflow-y-auto"
                                 >
                                     {renderGameContent()}
                                 </motion.div>
                             </AnimatePresence>
-                        </motion.div>
+                        </div>
                     </div>
                 </div>
             </div>

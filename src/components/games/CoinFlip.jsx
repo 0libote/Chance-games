@@ -19,40 +19,51 @@ export function CoinFlip({ onResult }) {
             setResult(newResult);
             setIsFlipping(false);
             if (onResult) onResult(newResult === 'heads' ? 'Heads' : 'Tails');
-        }, 2000);
+        }, 800);
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-full min-h-[400px]">
-            <div className="relative w-64 h-64 perspective-1000">
+        <div className="flex flex-col items-center justify-center h-full py-8">
+            <div className="relative w-56 sm:w-60 md:w-64 h-56 sm:h-60 md:h-64 mb-8 md:mb-12" style={{ perspective: '1000px' }}>
                 <motion.div
-                    className="w-full h-full relative preserve-3d cursor-pointer"
+                    className="w-full h-full relative"
                     animate={{
-                        rotateY: isFlipping ? [0, 1800] : result === 'tails' ? 180 : 0,
-                        rotateX: isFlipping ? [0, 720] : 0,
-                        scale: isFlipping ? [1, 1.5, 1] : 1,
+                        rotateY: isFlipping ? 360 : result === 'tails' ? 180 : 0,
                     }}
                     transition={{
-                        duration: 2,
-                        ease: "easeInOut"
+                        duration: 0.8,
+                        ease: [0.45, 0, 0.55, 1]
                     }}
                     onClick={flipCoin}
-                    style={{ transformStyle: 'preserve-3d' }}
+                    style={{
+                        transformStyle: 'preserve-3d',
+                        cursor: 'pointer'
+                    }}
                 >
                     {/* Heads Side */}
-                    <div className="absolute inset-0 w-full h-full rounded-full bg-gradient-to-br from-yellow-300 via-yellow-500 to-yellow-700 shadow-xl flex items-center justify-center backface-hidden border-4 border-yellow-600">
-                        <div className="w-[90%] h-[90%] rounded-full border-2 border-yellow-200/50 flex items-center justify-center bg-yellow-500/10">
-                            <span className="text-6xl font-heading font-bold text-yellow-100 drop-shadow-md">HEADS</span>
+                    <div
+                        className="absolute inset-0 w-full h-full rounded-full bg-gradient-to-br from-amber-300 via-yellow-400 to-amber-500 shadow-2xl flex items-center justify-center border-8 border-amber-600"
+                        style={{
+                            backfaceVisibility: 'hidden',
+                            WebkitBackfaceVisibility: 'hidden'
+                        }}
+                    >
+                        <div className="w-[85%] h-[85%] rounded-full border-4 border-amber-200 flex items-center justify-center bg-amber-400/20 shadow-inner">
+                            <span className="text-5xl sm:text-6xl md:text-7xl font-bold text-amber-900 drop-shadow-sm">H</span>
                         </div>
                     </div>
 
                     {/* Tails Side */}
                     <div
-                        className="absolute inset-0 w-full h-full rounded-full bg-gradient-to-br from-gray-300 via-gray-400 to-gray-500 shadow-xl flex items-center justify-center backface-hidden border-4 border-gray-400"
-                        style={{ transform: 'rotateY(180deg)' }}
+                        className="absolute inset-0 w-full h-full rounded-full bg-gradient-to-br from-slate-300 via-gray-400 to-slate-500 shadow-2xl flex items-center justify-center border-8 border-slate-600"
+                        style={{
+                            backfaceVisibility: 'hidden',
+                            WebkitBackfaceVisibility: 'hidden',
+                            transform: 'rotateY(180deg)'
+                        }}
                     >
-                        <div className="w-[90%] h-[90%] rounded-full border-2 border-gray-200/50 flex items-center justify-center bg-gray-400/10">
-                            <span className="text-6xl font-heading font-bold text-gray-100 drop-shadow-md">TAILS</span>
+                        <div className="w-[85%] h-[85%] rounded-full border-4 border-slate-200 flex items-center justify-center bg-slate-400/20 shadow-inner">
+                            <span className="text-5xl sm:text-6xl md:text-7xl font-bold text-slate-900 drop-shadow-sm">T</span>
                         </div>
                     </div>
                 </motion.div>
@@ -62,10 +73,10 @@ export function CoinFlip({ onResult }) {
                 onClick={flipCoin}
                 disabled={isFlipping}
                 className={cn(
-                    "mt-12 px-8 py-4 rounded-xl font-bold text-lg shadow-lg transition-all transform hover:scale-105 active:scale-95",
+                    "px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg transition-all transform hover:scale-105 active:scale-95",
                     isFlipping
                         ? "bg-gray-400 cursor-not-allowed text-gray-200"
-                        : "bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:shadow-orange-500/25"
+                        : "bg-amber-600 text-white hover:shadow-amber-500/30 hover:bg-amber-700"
                 )}
             >
                 {isFlipping ? 'Flipping...' : 'Flip Coin'}

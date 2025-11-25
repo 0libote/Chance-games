@@ -43,12 +43,12 @@ export function LoveCalculator({ onResult }) {
             }
             current += 2;
             setScore(current);
-        }, 50);
+        }, 30);
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-full min-h-[400px]">
-            <div className="relative w-64 h-64 mb-12 flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center h-full py-8">
+            <div className="relative w-48 sm:w-56 md:w-64 h-48 sm:h-56 md:h-64 mb-8 md:mb-12 flex items-center justify-center">
                 <motion.div
                     animate={{
                         scale: isCalculating ? [1, 1.2, 1] : 1,
@@ -56,7 +56,7 @@ export function LoveCalculator({ onResult }) {
                     transition={{ repeat: isCalculating ? Infinity : 0, duration: 0.8 }}
                 >
                     <Heart
-                        size={200}
+                        size={window.innerWidth < 640 ? 160 : 200}
                         className={cn(
                             "transition-colors duration-500",
                             isCalculating ? "text-pink-400" : "text-red-500"
@@ -66,7 +66,7 @@ export function LoveCalculator({ onResult }) {
                 </motion.div>
 
                 <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-5xl font-heading font-black text-white drop-shadow-lg">
+                    <span className="text-4xl sm:text-5xl md:text-6xl font-heading font-black text-white drop-shadow-lg">
                         {score !== null ? `${score}%` : '?'}
                     </span>
                 </div>
@@ -76,9 +76,9 @@ export function LoveCalculator({ onResult }) {
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mb-8 text-center max-w-md"
+                    className="mb-6 md:mb-8 text-center max-w-md px-4"
                 >
-                    <p className="text-xl font-medium text-pink-600 dark:text-pink-300">
+                    <p className="text-lg sm:text-xl md:text-2xl font-medium text-pink-600 dark:text-pink-300">
                         {message}
                     </p>
                 </motion.div>
@@ -88,10 +88,10 @@ export function LoveCalculator({ onResult }) {
                 onClick={calculateLove}
                 disabled={isCalculating}
                 className={cn(
-                    "px-8 py-4 rounded-xl font-bold text-lg shadow-lg transition-all transform hover:scale-105 active:scale-95",
+                    "px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg transition-all transform hover:scale-105 active:scale-95",
                     isCalculating
                         ? "bg-gray-400 cursor-not-allowed text-gray-200"
-                        : "bg-gradient-to-r from-red-500 to-pink-500 text-white hover:shadow-pink-500/25"
+                        : "bg-pink-600 text-white hover:shadow-pink-500/30 hover:bg-pink-700"
                 )}
             >
                 {isCalculating ? 'Calculating...' : 'Calculate Love'}

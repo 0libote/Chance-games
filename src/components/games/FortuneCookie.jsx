@@ -40,8 +40,8 @@ export function FortuneCookie({ onResult }) {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-full min-h-[400px]">
-            <div className="relative h-64 w-full flex items-center justify-center mb-8">
+        <div className="flex flex-col items-center justify-center h-full py-8">
+            <div className="relative h-48 sm:h-56 md:h-64 w-full flex items-center justify-center mb-6 md:mb-8 px-4">
                 <AnimatePresence>
                     {!isOpen ? (
                         <motion.button
@@ -52,8 +52,11 @@ export function FortuneCookie({ onResult }) {
                             onClick={openCookie}
                             className="relative group"
                         >
-                            <Cookie size={180} className="text-amber-400 drop-shadow-2xl" />
-                            <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-sm font-bold text-amber-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Cookie
+                                size={window.innerWidth < 640 ? 140 : window.innerWidth < 768 ? 160 : 180}
+                                className="text-amber-400 drop-shadow-2xl"
+                            />
+                            <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs sm:text-sm font-bold text-amber-600 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                                 Click to Open
                             </span>
                         </motion.button>
@@ -61,13 +64,13 @@ export function FortuneCookie({ onResult }) {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="bg-white p-6 max-w-sm shadow-xl transform rotate-1 border border-amber-100"
-                            style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 90%, 50% 100%, 0% 90%)' }} // Paper slip look
+                            className="bg-white p-4 sm:p-6 max-w-xs sm:max-w-sm shadow-xl transform rotate-1 border border-amber-100"
+                            style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 90%, 50% 100%, 0% 90%)' }}
                         >
-                            <p className="text-amber-800 font-serif text-lg text-center italic leading-relaxed">
+                            <p className="text-amber-800 font-serif text-sm sm:text-base md:text-lg text-center italic leading-relaxed">
                                 "{fortune}"
                             </p>
-                            <div className="mt-4 flex justify-center gap-2">
+                            <div className="mt-3 sm:mt-4 flex justify-center gap-1.5 sm:gap-2">
                                 {[1, 2, 3, 4, 5, 6].map(n => (
                                     <span key={n} className="text-xs text-amber-400 font-mono">
                                         {Math.floor(Math.random() * 99)}
@@ -82,10 +85,10 @@ export function FortuneCookie({ onResult }) {
             <button
                 onClick={openCookie}
                 className={cn(
-                    "px-8 py-4 rounded-xl font-bold text-lg shadow-lg transition-all transform hover:scale-105 active:scale-95",
+                    "px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg transition-all transform hover:scale-105 active:scale-95",
                     isOpen
                         ? "bg-secondary text-secondary-foreground border border-border hover:bg-secondary/80"
-                        : "bg-gradient-to-r from-amber-400 to-orange-500 text-white hover:shadow-amber-500/25"
+                        : "bg-amber-500 text-white hover:shadow-amber-500/30 hover:bg-amber-600"
                 )}
             >
                 {isOpen ? 'Get Another Cookie' : 'Open Cookie'}

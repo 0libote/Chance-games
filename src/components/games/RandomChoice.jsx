@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../lib/utils';
 import { Shuffle } from 'lucide-react';
 
@@ -29,9 +29,9 @@ export function RandomChoice({ onResult }) {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-full min-h-[400px]">
+        <div className="flex flex-col items-center justify-center h-full py-8">
             <motion.div
-                className="w-full max-w-md h-40 flex items-center justify-center mb-12 bg-card border border-border rounded-2xl shadow-inner overflow-hidden relative"
+                className="w-full max-w-md h-32 sm:h-36 md:h-40 flex items-center justify-center mb-8 md:mb-12 bg-card border border-border rounded-2xl shadow-inner overflow-hidden relative mx-4"
             >
                 <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-green-500/10" />
                 <AnimatePresence mode="wait">
@@ -40,7 +40,7 @@ export function RandomChoice({ onResult }) {
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: -20, opacity: 0 }}
-                        className="text-4xl font-heading font-bold text-foreground text-center px-4"
+                        className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-foreground text-center px-4"
                     >
                         {result || 'Ready?'}
                     </motion.span>
@@ -51,10 +51,10 @@ export function RandomChoice({ onResult }) {
                 onClick={makeChoice}
                 disabled={isChoosing}
                 className={cn(
-                    "px-8 py-4 rounded-xl font-bold text-lg shadow-lg transition-all transform hover:scale-105 active:scale-95 flex items-center gap-2",
+                    "px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg transition-all transform hover:scale-105 active:scale-95 flex items-center gap-2",
                     isChoosing
                         ? "bg-gray-400 cursor-not-allowed text-gray-200"
-                        : "bg-gradient-to-r from-emerald-500 to-green-600 text-white hover:shadow-green-500/25"
+                        : "bg-emerald-600 text-white hover:shadow-emerald-500/30 hover:bg-emerald-700"
                 )}
             >
                 <Shuffle size={24} />

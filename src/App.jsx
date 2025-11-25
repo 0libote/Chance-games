@@ -47,31 +47,35 @@ const App = () => {
             <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6 max-w-7xl relative z-10">
                 {/* Header */}
                 <motion.header
-                    className="flex items-center justify-between mb-6 sm:mb-8"
+                    className="flex flex-col md:flex-row items-center justify-between mb-8 sm:mb-12 gap-6"
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, ease: "easeOut" }}
                 >
-                    <div>
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display text-foreground tracking-tight relative">
-                            <span className="gradient-text">Chance Master</span>
-                            <motion.div
-                                className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 blur-xl opacity-50 -z-10"
-                                animate={{
-                                    opacity: [0.3, 0.6, 0.3],
-                                }}
-                                transition={{
-                                    duration: 3,
-                                    repeat: Infinity,
-                                    ease: "easeInOut"
-                                }}
-                            />
+                    <div className="text-center md:text-left relative group">
+                        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display text-foreground tracking-tighter relative z-10">
+                            <span className="gradient-text drop-shadow-sm">Chance Master</span>
                         </h1>
-                        <p className="text-muted-foreground text-sm sm:text-base md:text-lg font-medium mt-2">
+                        <motion.div
+                            className="absolute -inset-4 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 blur-2xl opacity-50 -z-10 rounded-full"
+                            animate={{
+                                opacity: [0.3, 0.6, 0.3],
+                                scale: [0.9, 1.1, 0.9],
+                            }}
+                            transition={{
+                                duration: 4,
+                                repeat: Infinity,
+                                ease: "easeInOut"
+                            }}
+                        />
+                        <p className="text-muted-foreground text-sm sm:text-base font-medium mt-2 tracking-wide uppercase opacity-80">
                             Your ultimate guide to fortune and randomness
                         </p>
                     </div>
-                    <ThemeToggle />
+
+                    <div className="flex items-center gap-4">
+                        <ThemeToggle />
+                    </div>
                 </motion.header>
 
                 <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">

@@ -126,21 +126,26 @@ export function DiceRoll({ onResult }) {
                 />
             </div>
 
-            <div className="w-full max-w-xs mb-8 px-4">
-                <label className="block text-sm font-medium text-muted-foreground mb-3 text-center">
-                    Number of sides: <span className="text-foreground font-bold text-base">{sides}</span>
+            <div className="w-full max-w-md mb-8 px-4">
+                <label className="block text-sm font-medium text-muted-foreground mb-4 text-center uppercase tracking-wider">
+                    Number of Sides
                 </label>
-                <input
-                    type="range"
-                    min="2"
-                    max="20"
-                    value={sides}
-                    onChange={(e) => setSides(parseInt(e.target.value))}
-                    className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
-                    style={{
-                        background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${((sides - 2) / 18) * 100}%, hsl(var(--secondary)) ${((sides - 2) / 18) * 100}%, hsl(var(--secondary)) 100%)`
-                    }}
-                />
+                <div className="flex flex-wrap gap-2 justify-center">
+                    {[4, 6, 8, 10, 12, 20].map(num => (
+                        <button
+                            key={num}
+                            onClick={() => setSides(num)}
+                            className={cn(
+                                "px-4 py-2 rounded-lg font-semibold transition-all duration-200",
+                                sides === num
+                                    ? "bg-primary text-primary-foreground shadow-lg scale-110"
+                                    : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:scale-105"
+                            )}
+                        >
+                            D{num}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             <button

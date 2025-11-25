@@ -23,11 +23,11 @@ export function CoinFlip({ onResult }) {
 
         await controls.start({
             rotateY: rotateY,
-            rotateX: [0, 720, 0], // Add some X rotation for wobble
-            y: [0, -300, 0],
-            scale: [1, 1.5, 1],
+            rotateX: [0, 720, 0], // Ensure it lands flat on X
+            y: [0, -350, 0], // Higher bounce
+            scale: [1, 1.3, 1],
             transition: {
-                duration: 2.5,
+                duration: 2,
                 ease: "easeInOut",
                 times: [0, 0.5, 1]
             }

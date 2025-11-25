@@ -128,40 +128,42 @@ export function LotteryDraw({ onResult }) {
                 </AnimatePresence>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-md mb-8 px-4">
-                <div className="glass p-4 rounded-xl border border-white/10">
-                    <label className="block text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wider">
-                        Count: <span className="text-foreground font-bold">{count}</span>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-md mb-8 px-4">
+                <div className="glass-strong p-5 rounded-2xl border border-white/20">
+                    <label className="block text-sm font-semibold text-foreground mb-3 text-center">
+                        How Many Numbers
                     </label>
+                    <div className="text-center mb-3">
+                        <span className="text-4xl font-display font-black text-primary">{count}</span>
+                    </div>
                     <input
                         type="range"
                         min="1"
                         max="10"
                         value={count}
                         onChange={(e) => setCount(parseInt(e.target.value))}
-                        className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-emerald-500"
-                        style={{
-                            background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${((count - 1) / 9) * 100}%, hsl(var(--secondary)) ${((count - 1) / 9) * 100}%, hsl(var(--secondary)) 100%)`
-                        }}
+                        className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
                     />
                 </div>
-                <div className="glass p-4 rounded-xl border border-white/10">
-                    <label className="block text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wider">
-                        Range: 1-<span className="text-foreground font-bold">{range}</span>
+                <div className="glass-strong p-5 rounded-2xl border border-white/20">
+                    <label className="block text-sm font-semibold text-foreground mb-3 text-center">
+                        Max Number
                     </label>
+                    <div className="text-center mb-3">
+                        <span className="text-4xl font-display font-black text-primary">{range}</span>
+                    </div>
                     <input
                         type="range"
                         min="10"
                         max="99"
                         value={range}
                         onChange={(e) => setRange(parseInt(e.target.value))}
-                        className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-emerald-500"
-                        style={{
-                            background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${((range - 10) / 89) * 100}%, hsl(var(--secondary)) ${((range - 10) / 89) * 100}%, hsl(var(--secondary)) 100%)`
-                        }}
+                        className="w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
                     />
                 </div>
             </div>
+
 
             <button
                 onClick={drawNumbers}

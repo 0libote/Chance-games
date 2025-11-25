@@ -18,10 +18,15 @@ export function Sidebar({ games, activeGame, setActiveGame }) {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className="lg:hidden fixed top-4 left-4 z-50 p-3 bg-card/80 backdrop-blur-xl border border-white/20 rounded-2xl shadow-xl text-foreground"
+                className="lg:hidden fixed top-4 left-4 z-50 p-3 glass-strong rounded-2xl shadow-xl text-foreground glow-primary"
                 aria-label="Toggle menu"
             >
-                {isOpen ? <X size={24} /> : <Menu size={24} />}
+                <motion.div
+                    animate={{ rotate: isOpen ? 90 : 0 }}
+                    transition={{ duration: 0.3 }}
+                >
+                    {isOpen ? <X size={24} /> : <Menu size={24} />}
+                </motion.div>
             </motion.button>
 
             {/* Mobile Backdrop */}
@@ -57,29 +62,44 @@ export function Sidebar({ games, activeGame, setActiveGame }) {
                 `}
             >
                 <div className="lg:w-full lg:min-w-[280px] space-y-6 pointer-events-auto">
-                    <div className="bg-card/95 backdrop-blur-xl border-2 border-border/50 rounded-2xl p-6 shadow-lg lg:sticky lg:top-8 max-h-[calc(100vh-120px)] lg:max-h-[calc(100vh-64px)] overflow-y-auto transition-colors duration-300">
+                    <motion.div
+                        className="glass-strong border-2 rounded-2xl p-6 shadow-2xl lg:sticky lg:top-8 max-h-[calc(100vh-120px)] lg:max-h-[calc(100vh-64px)] overflow-y-auto glow-primary"
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 0.3 }}
+                    >
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                            <motion.div
+                                className="p-2 bg-primary/20 rounded-lg text-primary"
+                                whileHover={{ scale: 1.1, rotate: 5 }}
+                            >
                                 <Sparkles size={22} />
-                            </div>
+                            </motion.div>
                             <h2 className="text-lg font-bold text-foreground">Games</h2>
                         </div>
 
                         <div className="space-y-2.5">
-                            {games.map((game) => (
-                                <GameCard
+                            {games.map((game, index) => (
+                                <motion.div
                                     key={game.id}
-                                    title={game.name}
-                                    icon={game.icon}
-                                    color={game.color}
-                                    isActive={activeGame === game.id}
-                                    onClick={() => handleGameSelect(game.id)}
-                                />
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.4 + index * 0.05 }}
+                                >
+                                    <GameCard
+                                        title={game.name}
+                                        description={game.description}
+                                        icon={<game.icon size={24} />}
+                                        isSelected={activeGame === game.id}
+                                        onClick={() => handleGameSelect(game.id)}
+                                    />
+                                </motion.div>
                             ))}
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             </motion.div>
         </>
     );
 }
+

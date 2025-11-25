@@ -21,39 +21,79 @@ export function MagicEightBall({ onResult }) {
         setIsShaking(true);
         setAnswer(null);
 
+        // More complex shake pattern
         setTimeout(() => {
             const newAnswer = answers[Math.floor(Math.random() * answers.length)];
             setAnswer(newAnswer);
             setIsShaking(false);
             if (onResult) onResult(newAnswer);
-        }, 1500);
+        }, 2000);
     };
 
     return (
         <div className="flex flex-col items-center justify-center h-full py-8">
-            <div className="relative w-64 sm:w-72 md:w-80 h-64 sm:h-72 md:h-80 mb-8 md:mb-12">
+            <div className="relative w-72 h-72 mb-12">
                 <motion.div
-                    className="w-full h-full rounded-full shadow-2xl flex items-center justify-center border-b-8 border-black/50"
-                    style={{ background: 'radial-gradient(circle at 30% 30%, #2a2a2a, #000000)' }}
-                    animate={{
-                        x: isShaking ? [-8, 8, -8, 8, 0] : 0,
-                        y: isShaking ? [-8, 8, -8, 8, 0] : 0,
-                        rotate: isShaking ? [-4, 4, -4, 4, 0] : 0,
+                    className="w-full h-full rounded-full shadow-2xl flex items-center justify-center relative overflow-hidden"
+                    style={{
+                        background: 'radial-gradient(circle at 30% 30%, #333, #000)',
+                        boxShadow: '0 30px 80px rgba(0, 0, 0, 0.8), inset 0 -20px 40px rgba(0, 0, 0, 0.8), inset 0 10px 20px rgba(255,255,255,0.1)'
                     }}
-                    transition={{ duration: 0.4, repeat: isShaking ? 3 : 0 }}
+                    animate={{
+                        x: isShaking ? [-10, 10, -10, 10, -5, 5, -2, 2, 0] : 0,
+                        y: isShaking ? [-10, 10, -10, 10, -5, 5, -2, 2, 0] : 0,
+                        rotate: isShaking ? [-10, 10, -10, 10, -5, 5, 0] : 0,
+                    }}
+                    transition={{ duration: 0.5, repeat: isShaking ? 4 : 0 }}
                 >
-                    {/* Inner Circle / Window */}
-                    <div className="w-36 sm:w-40 md:w-44 h-36 sm:h-40 md:h-44 rounded-full bg-gradient-to-br from-indigo-950 to-black border-4 border-slate-800 flex items-center justify-center overflow-hidden relative shadow-inner">
+                    {/* Surface Glare */}
+                    <div className="absolute top-8 left-8 w-24 h-16 rounded-full bg-white/10 blur-xl transform -rotate-45" />
+
+                    {/* The Window */}
+                    <div className="w-40 h-40 rounded-full bg-black border-8 border-gray-900/50 flex items-center justify-center overflow-hidden relative shadow-[inset_0_0_20px_rgba(0,0,0,1)]">
+                        {/* Liquid Background */}
+                        <div className="absolute inset-0 bg-[#000022]">
+                            <motion.div
+                                className="absolute inset-0 opacity-30"
+                                animate={{
+                                    background: [
+                                        'radial-gradient(circle at 50% 50%, #1a1a4a 0%, transparent 70%)',
+                                        'radial-gradient(circle at 60% 40%, #1a1a4a 0%, transparent 70%)',
+                                        'radial-gradient(circle at 40% 60%, #1a1a4a 0%, transparent 70%)',
+                                        'radial-gradient(circle at 50% 50%, #1a1a4a 0%, transparent 70%)',
+                                    ]
+                                }}
+                                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                            />
+                        </div>
+
                         <AnimatePresence mode="wait">
                             {answer ? (
                                 <motion.div
-                                    key="answer"
-                                    initial={{ opacity: 0, scale: 0.5 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ duration: 0.5 }}
-                                    className="w-full h-full flex items-center justify-center p-4"
+                                    key="triangle"
+                                    initial={{ opacity: 0, scale: 0.5, rotate: 180, y: 50 }}
+                                    animate={{
+                                        opacity: 1,
+                                        scale: 1,
+                                        rotate: 0,
+                                        y: 0,
+                                        filter: ['blur(10px)', 'blur(0px)']
+                                    }}
+                                    exit={{ opacity: 0, scale: 0.5, filter: 'blur(10px)' }}
+                                    transition={{ duration: 1.5, ease: "easeOut" }}
+                                    className="relative w-28 h-28 flex items-center justify-center"
                                 >
-                                    <span className="text-white text-center font-bold text-sm sm:text-base leading-tight">
+                                    {/* Blue Triangle */}
+                                    <div
+                                        className="absolute inset-0"
+                                        style={{
+                                            clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
+                                            background: 'linear-gradient(to bottom, #1e3a8a, #172554)',
+                                            boxShadow: '0 0 20px #3b82f6'
+                                        }}
+                                    />
+                                    {/* Text */}
+                                    <span className="relative z-10 text-blue-100 text-center text-[0.65rem] font-bold uppercase tracking-wider leading-tight w-16 pt-4 drop-shadow-md">
                                         {answer}
                                     </span>
                                 </motion.div>
@@ -62,29 +102,36 @@ export function MagicEightBall({ onResult }) {
                                     key="8"
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
-                                    className="w-24 sm:w-28 md:w-32 h-24 sm:h-28 md:h-32 rounded-full bg-white flex items-center justify-center shadow-lg"
+                                    exit={{ opacity: 0 }}
+                                    className="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-lg relative"
                                 >
-                                    <span className="text-6xl sm:text-7xl md:text-8xl font-black text-black">8</span>
+                                    <span className="text-7xl font-black text-black">8</span>
                                 </motion.div>
                             )}
                         </AnimatePresence>
 
-                        {/* Glare effect */}
-                        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/5 to-transparent pointer-events-none rounded-full" />
+                        {/* Glass Reflection over window */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-full pointer-events-none" />
                     </div>
                 </motion.div>
 
                 {/* Shadow */}
-                <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-40 sm:w-44 md:w-48 h-6 sm:h-7 md:h-8 bg-black/20 blur-xl rounded-full" />
+                <motion.div
+                    className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-48 h-8 bg-black/50 blur-xl rounded-full"
+                    animate={{
+                        scale: isShaking ? [1, 0.8, 1.2, 1] : 1,
+                        opacity: isShaking ? [0.5, 0.3, 0.5] : 0.5,
+                    }}
+                />
             </div>
 
-            <div className="w-full max-w-md space-y-4 px-4">
+            <div className="w-full max-w-md space-y-6 px-4">
                 <input
                     type="text"
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
-                    placeholder="Ask the Magic 8 Ball a question..."
-                    className="w-full px-4 sm:px-6 py-3 sm:py-4 bg-background border-2 border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-center text-base sm:text-lg shadow-sm transition-all placeholder:text-muted-foreground"
+                    placeholder="Ask a Yes/No question..."
+                    className="w-full px-6 py-4 glass border-2 border-white/10 rounded-2xl focus:outline-none focus:border-primary/50 text-center text-lg shadow-inner transition-all placeholder:text-muted-foreground/50"
                     onKeyDown={(e) => e.key === 'Enter' && shakeBall()}
                 />
 
@@ -92,13 +139,13 @@ export function MagicEightBall({ onResult }) {
                     onClick={shakeBall}
                     disabled={isShaking || !question.trim()}
                     className={cn(
-                        "w-full px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg transition-all transform hover:scale-105 active:scale-95",
+                        "w-full px-8 py-4 rounded-xl font-display font-bold text-lg tracking-wider transition-all duration-300",
                         isShaking || !question.trim()
-                            ? "bg-gray-400 cursor-not-allowed text-gray-200"
-                            : "bg-purple-600 text-white hover:shadow-purple-500/30 hover:bg-purple-700"
+                            ? "bg-secondary/50 text-muted-foreground cursor-not-allowed"
+                            : "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-[0_0_30px_-5px_hsl(var(--primary)/0.5)] hover:shadow-[0_0_50px_-5px_hsl(var(--primary)/0.7)] hover:scale-[1.02] active:scale-[0.98]"
                     )}
                 >
-                    {isShaking ? 'Consulting...' : 'Shake 8 Ball'}
+                    {isShaking ? 'CONSULTING SPIRITS...' : 'SHAKE 8 BALL'}
                 </button>
             </div>
         </div>

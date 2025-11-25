@@ -1,85 +1,125 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, useAnimation } from 'framer-motion';
 import { cn } from '../../lib/utils';
+import { ConfettiEffect } from '../ConfettiEffect';
 
 export function CoinFlip({ onResult }) {
     const [isFlipping, setIsFlipping] = useState(false);
     const [result, setResult] = useState(null); // 'heads' or 'tails'
+    const [showConfetti, setShowConfetti] = useState(false);
+    const controls = useAnimation();
 
-    const flipCoin = () => {
+    const flipCoin = async () => {
         if (isFlipping) return;
         setIsFlipping(true);
         setResult(null);
+        setShowConfetti(false);
 
         // Random result
-        const newResult = Math.random() < 0.5 ? 'heads' : 'tails';
+        const isHeads = Math.random() < 0.5;
+        const newResult = isHeads ? 'heads' : 'tails';
+        const rotations = 5 + Math.random() * 5; // Random rotations between 5 and 10
+        const rotateY = isHeads ? rotations * 360 : rotations * 360 + 180;
 
-        // Delay setting result to allow animation to play
-        setTimeout(() => {
-            setResult(newResult);
-            setIsFlipping(false);
-            if (onResult) onResult(newResult === 'heads' ? 'Heads' : 'Tails');
-        }, 600);
+        await controls.start({
+            rotateY: rotateY,
+            rotateX: [0, 720, 0], // Add some X rotation for wobble
+            y: [0, -300, 0],
+            scale: [1, 1.5, 1],
+            transition: {
+                duration: 2.5,
+                ease: "easeInOut",
+                times: [0, 0.5, 1]
+            }
+        });
+
+        setResult(newResult);
+        setIsFlipping(false);
+        setShowConfetti(true);
+        if (onResult) onResult(newResult === 'heads' ? 'Heads' : 'Tails');
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-full py-6 sm:py-8">
-            <div className="relative w-48 sm:w-56 md:w-64 h-48 sm:h-56 md:h-64 mb-8 sm:mb-10 md:mb-12" style={{ perspective: '1000px' }}>
+        <div className="flex flex-col items-center justify-center h-full py-10 relative perspective-1000">
+            <ConfettiEffect trigger={showConfetti} duration={2000} />
+
+            <div className="relative w-64 h-64 mb-12" style={{ perspective: '1200px' }}>
                 <motion.div
-                    className="w-full h-full relative"
-                    animate={{
-                        rotateY: result === 'tails' ? 180 : 0,
-                    }}
-                    transition={{
-                        duration: 0.6,
-                        ease: [0.43, 0.13, 0.23, 0.96]
-                    }}
-                    onClick={flipCoin}
-                    style={{
-                        transformStyle: 'preserve-3d',
-                        cursor: 'pointer'
-                    }}
+                    className="w-full h-full relative preserve-3d"
+                    animate={controls}
+                    initial={{ rotateY: 0 }}
+                    style={{ transformStyle: 'preserve-3d' }}
                 >
-                    {/* Heads Side */}
+                    {/* Coin Thickness (Edge) */}
+                    {Array.from({ length: 20 }).map((_, i) => (
+                        <div
+                            key={i}
+                            className="absolute inset-0 rounded-full border-4 border-amber-600/50"
+                            style={{
+                                transform: `translateZ(${i - 10}px)`,
+                                background: 'linear-gradient(to right, #b45309, #fbbf24, #b45309)',
+                                width: '100%',
+                                height: '100%'
+                            }}
+                        />
+                    ))}
+
+                    {/* Heads Side (Front) */}
                     <div
-                        className="absolute inset-0 w-full h-full rounded-full bg-gradient-to-br from-amber-300 via-yellow-400 to-amber-500 shadow-2xl flex items-center justify-center border-8 border-amber-600"
+                        className="absolute inset-0 w-full h-full rounded-full flex items-center justify-center backface-hidden"
                         style={{
-                            backfaceVisibility: 'hidden',
-                            WebkitBackfaceVisibility: 'hidden'
+                            transform: 'translateZ(11px)',
+                            background: 'radial-gradient(circle at 30% 30%, #fbbf24, #d97706)',
+                            boxShadow: 'inset 0 0 20px rgba(0,0,0,0.3), 0 0 10px rgba(251, 191, 36, 0.5)',
+                            border: '8px solid #b45309'
                         }}
                     >
-                        <div className="w-[85%] h-[85%] rounded-full border-4 border-amber-200 flex items-center justify-center bg-amber-400/20 shadow-inner">
-                            <span className="text-5xl sm:text-6xl md:text-7xl font-bold text-amber-900 drop-shadow-sm">H</span>
+                        <div className="w-[85%] h-[85%] rounded-full border-2 border-amber-200/30 flex items-center justify-center relative overflow-hidden">
+                            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay"></div>
+                            <span className="text-8xl font-display font-black text-amber-900 drop-shadow-md relative z-10">H</span>
+                            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/40 to-transparent opacity-0 animate-shine" />
                         </div>
                     </div>
 
-                    {/* Tails Side */}
+                    {/* Tails Side (Back) */}
                     <div
-                        className="absolute inset-0 w-full h-full rounded-full bg-gradient-to-br from-slate-300 via-gray-400 to-slate-500 shadow-2xl flex items-center justify-center border-8 border-slate-600"
+                        className="absolute inset-0 w-full h-full rounded-full flex items-center justify-center backface-hidden"
                         style={{
-                            backfaceVisibility: 'hidden',
-                            WebkitBackfaceVisibility: 'hidden',
-                            transform: 'rotateY(180deg)'
+                            transform: 'rotateY(180deg) translateZ(11px)',
+                            background: 'radial-gradient(circle at 30% 30%, #e5e7eb, #9ca3af)',
+                            boxShadow: 'inset 0 0 20px rgba(0,0,0,0.3), 0 0 10px rgba(255, 255, 255, 0.3)',
+                            border: '8px solid #4b5563'
                         }}
                     >
-                        <div className="w-[85%] h-[85%] rounded-full border-4 border-slate-200 flex items-center justify-center bg-slate-400/20 shadow-inner">
-                            <span className="text-5xl sm:text-6xl md:text-7xl font-bold text-slate-900 drop-shadow-sm">T</span>
+                        <div className="w-[85%] h-[85%] rounded-full border-2 border-white/30 flex items-center justify-center relative overflow-hidden">
+                            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay"></div>
+                            <span className="text-8xl font-display font-black text-slate-700 drop-shadow-md relative z-10">T</span>
                         </div>
                     </div>
                 </motion.div>
+
+                {/* Shadow */}
+                <motion.div
+                    className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 w-32 h-8 bg-black/40 blur-xl rounded-full"
+                    animate={{
+                        scale: isFlipping ? [1, 0.5, 1] : 1,
+                        opacity: isFlipping ? [0.4, 0.1, 0.4] : 0.4,
+                    }}
+                    transition={{ duration: 2.5, times: [0, 0.5, 1] }}
+                />
             </div>
 
             <button
                 onClick={flipCoin}
                 disabled={isFlipping}
                 className={cn(
-                    "px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg transition-all transform hover:scale-105 active:scale-95",
+                    "px-10 py-4 rounded-full font-display font-bold text-lg tracking-wider transition-all duration-300",
                     isFlipping
-                        ? "bg-gray-400 cursor-not-allowed text-gray-200"
-                        : "bg-amber-600 text-white hover:shadow-amber-500/30 hover:bg-amber-700"
+                        ? "bg-secondary text-muted-foreground cursor-not-allowed"
+                        : "bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-[0_0_30px_-5px_rgba(245,158,11,0.6)] hover:shadow-[0_0_50px_-5px_rgba(245,158,11,0.8)] hover:scale-105 active:scale-95"
                 )}
             >
-                {isFlipping ? 'Flipping...' : 'Flip Coin'}
+                {isFlipping ? 'FLIPPING...' : 'FLIP COIN'}
             </button>
         </div>
     );

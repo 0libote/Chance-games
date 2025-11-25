@@ -19,20 +19,20 @@ export function CoinFlip({ onResult }) {
             setResult(newResult);
             setIsFlipping(false);
             if (onResult) onResult(newResult === 'heads' ? 'Heads' : 'Tails');
-        }, 800);
+        }, 600);
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-full py-8">
-            <div className="relative w-56 sm:w-60 md:w-64 h-56 sm:h-60 md:h-64 mb-8 md:mb-12" style={{ perspective: '1000px' }}>
+        <div className="flex flex-col items-center justify-center h-full py-6 sm:py-8">
+            <div className="relative w-48 sm:w-56 md:w-64 h-48 sm:h-56 md:h-64 mb-8 sm:mb-10 md:mb-12" style={{ perspective: '1000px' }}>
                 <motion.div
                     className="w-full h-full relative"
                     animate={{
-                        rotateY: isFlipping ? 360 : result === 'tails' ? 180 : 0,
+                        rotateY: result === 'tails' ? 180 : 0,
                     }}
                     transition={{
-                        duration: 0.8,
-                        ease: [0.45, 0, 0.55, 1]
+                        duration: 0.6,
+                        ease: [0.43, 0.13, 0.23, 0.96]
                     }}
                     onClick={flipCoin}
                     style={{

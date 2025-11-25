@@ -40,22 +40,22 @@ const App = () => {
     const activeBorderColor = games.find(g => g.id === activeGame)?.color || 'border-gray-500';
 
     return (
-        <div className="min-h-screen bg-background text-foreground overflow-x-hidden transition-colors duration-300">
-            <div className="container mx-auto px-6 py-6 max-w-7xl relative">
+        <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+            <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6 max-w-7xl relative">
                 {/* Header */}
-                <header className="flex items-center justify-between mb-8">
+                <header className="flex items-center justify-between mb-6 sm:mb-8">
                     <div>
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground tracking-tight">
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-foreground tracking-tight">
                             Chance Master
                         </h1>
-                        <p className="text-muted-foreground text-base md:text-lg font-medium mt-1">
+                        <p className="text-muted-foreground text-sm sm:text-base md:text-lg font-medium mt-1">
                             Your ultimate guide to fortune and randomness
                         </p>
                     </div>
                     <ThemeToggle />
                 </header>
 
-                <div className="flex flex-col lg:flex-row gap-6">
+                <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
                     <Sidebar
                         games={games}
                         activeGame={activeGame}
@@ -63,8 +63,8 @@ const App = () => {
                     />
 
                     {/* Main Game Area */}
-                    <div className="flex-1 w-full lg:w-auto min-h-[550px]">
-                        <div className={`bg-card/70 backdrop-blur-xl border-4 ${activeBorderColor} rounded-3xl shadow-xl h-full relative overflow-hidden transition-all duration-300`}>
+                    <div className="flex-1 w-full lg:w-auto min-h-[500px] sm:min-h-[550px]">
+                        <div className={`bg-card/70 backdrop-blur-xl border-4 ${activeBorderColor} rounded-3xl shadow-xl h-full relative overflow-hidden`}>
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={activeGame}
@@ -72,7 +72,7 @@ const App = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
                                     transition={{ duration: 0.25, ease: "easeInOut" }}
-                                    className="h-full w-full p-8 md:p-10 lg:p-12 overflow-y-auto"
+                                    className="h-full w-full p-6 sm:p-8 md:p-10 lg:p-12 overflow-y-auto"
                                 >
                                     {renderGameContent()}
                                 </motion.div>

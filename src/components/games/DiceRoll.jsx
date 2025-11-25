@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '../../lib/utils';
-import { Dice1, Dice2, Dice3, Dice4, Dice5, Dice6 } from 'lucide-react';
 
 export function DiceRoll({ onResult }) {
     const [isRolling, setIsRolling] = useState(false);
@@ -12,44 +11,82 @@ export function DiceRoll({ onResult }) {
         if (isRolling) return;
         setIsRolling(true);
 
-        // Animation loop
+        // Animation loop - change numbers quickly
+        let count = 0;
         const interval = setInterval(() => {
             setResult(Math.floor(Math.random() * sides) + 1);
-        }, 80);
+            count++;
+            if (count >= 10) {
+                clearInterval(interval);
+            }
+        }, 60);
 
+        // Final result after animation
         setTimeout(() => {
-            clearInterval(interval);
             const newResult = Math.floor(Math.random() * sides) + 1;
             setResult(newResult);
             setIsRolling(false);
             if (onResult) onResult(`Rolled a ${newResult}`);
-        }, 800);
+        }, 700);
     };
 
-    const getIcon = (num) => {
-        // For standard d6, use icons. For others, show number.
-        if (sides === 6 && num <= 6) {
-            const icons = [Dice1, Dice1, Dice2, Dice3, Dice4, Dice5, Dice6];
-            const Icon = icons[num] || Dice6;
-            return <Icon size={window.innerWidth < 640 ? 100 : 140} className="text-white" />;
-        }
-        return <span className="text-6xl sm:text-7xl md:text-8xl font-black text-white">{num}</span>;
+    // 3D Dice rendering for d6
+    const renderD6 = () => {
+        const dotPositions = {
+            1: [[50, 50]],
+            2: [[25, 25], [75, 75]],
+            3: [[25, 25], [50, 50], [75, 75]],
+            4: [[25, 25], [75, 25], [25, 75], [75, 75]],
+            5: [[25, 25], [75, 25], [50, 50], [25, 75], [75, 75]],
+            6: [[25, 25], [75, 25], [25, 50], [75, 50], [25, 75], [75, 75]]
+        };
+
+        return (
+            <div className="relative w-full h-full" style={{ transformStyle: 'preserve-3d' }}>
+                {/* Front face */}
+                <div
+                    className="absolute w-full h-full bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl border-4 border-white/30 shadow-2xl flex items-center justify-center"
+                    style={{ transform: 'translateZ(60px)' }}
+                >
+                    <div className="relative w-full h-full">
+                        {dotPositions[result]?.map((dot, i) => (
+                            <div
+                                key={i}
+                                className="absolute w-5 h-5 bg-white rounded-full shadow-lg"
+                                style={{ left: `${dot[0]}%`, top: `${dot[1]}%`, transform: 'translate(-50%, -50%)' }}
+                            />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-full py-8">
+        <div className="flex flex-col items-center justify-center h-full py-6 sm:py-8">
             <motion.div
-                className="w-44 sm:w-48 md:w-52 h-44 sm:h-48 md:h-52 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-3xl shadow-2xl flex items-center justify-center mb-8 md:mb-10 border-4 border-white/20"
+                className="w-40 sm:w-48 md:w-52 h-40 sm:h-48 md:h-52 mb-8 sm:mb-10 md:mb-12"
+                style={{ perspective: '800px' }}
                 animate={{
-                    rotate: isRolling ? [0, 180, 360] : 0,
-                    scale: isRolling ? [1, 1.1, 1] : 1,
+                    rotateX: isRolling ? [0, 360, 720, 1080] : 0,
+                    rotateY: isRolling ? [0, 360, 720, 1080] : 0,
+                    rotateZ: isRolling ? [0, 180, 360, 540] : 0,
                 }}
-                transition={{ duration: 0.8, ease: "easeInOut" }}
+                transition={{
+                    duration: 0.7,
+                    ease: "easeOut"
+                }}
             >
-                {getIcon(result)}
+                {sides === 6 ? (
+                    renderD6()
+                ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-blue-500 to-cyan-600 rounded-3xl shadow-2xl flex items-center justify-center border-4 border-white/20">
+                        <span className="text-6xl sm:text-7xl md:text-8xl font-black text-white drop-shadow-lg">{result}</span>
+                    </div>
+                )}
             </motion.div>
 
-            <div className="w-full max-w-xs mb-6 md:mb-8 px-4">
+            <div className="w-full max-w-xs mb-6 sm:mb-8 md:mb-10 px-4">
                 <label className="block text-sm font-medium text-muted-foreground mb-3 text-center">
                     Number of sides: <span className="text-foreground font-bold text-base md:text-lg">{sides}</span>
                 </label>

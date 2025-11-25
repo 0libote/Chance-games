@@ -22,20 +22,20 @@ export function LotteryDraw({ onResult }) {
         // Animate one by one
         let current = 0;
         const interval = setInterval(() => {
-            if (current >= finalNumbers.length) {
+            if (current < finalNumbers.length) {
+                setNumbers(prev => [...prev, finalNumbers[current]]);
+                current++;
+            } else {
                 clearInterval(interval);
                 setIsDrawing(false);
                 if (onResult) onResult(finalNumbers.join(', '));
-                return;
             }
-            setNumbers(prev => [...prev, finalNumbers[current]]);
-            current++;
         }, 300);
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-full py-8">
-            <div className="flex flex-wrap gap-3 sm:gap-4 justify-center mb-8 md:mb-12 min-h-[60px] sm:min-h-[80px] px-4">
+        <div className="flex flex-col items-center justify-center h-full py-6 sm:py-8">
+            <div className="flex flex-wrap gap-3 sm:gap-4 justify-center mb-8 sm:mb-10 md:mb-12 min-h-[80px] sm:min-h-[100px] px-4">
                 {numbers.map((num, i) => (
                     <motion.div
                         key={`${num}-${i}`}
@@ -49,7 +49,7 @@ export function LotteryDraw({ onResult }) {
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 w-full max-w-md mb-6 md:mb-8 px-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 w-full max-w-md mb-6 sm:mb-8 md:mb-10 px-4">
                 <div className="bg-secondary/50 p-3 sm:p-4 rounded-xl border border-border">
                     <label className="block text-xs sm:text-sm font-medium text-muted-foreground mb-2">
                         Count: <span className="text-foreground font-bold">{count}</span>

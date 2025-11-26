@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Dice6, Coins, Sparkles, Ticket, Cookie, Heart, Shuffle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sidebar } from './components/Sidebar'; // Keep for now to avoid breaking build if file still exists, but unused. Actually, let's remove it.
+
 import { ThemeToggle } from './components/ThemeToggle';
 import { ParticleBackground } from './components/ParticleBackground';
 import { GamePickerModal } from './components/GamePickerModal';

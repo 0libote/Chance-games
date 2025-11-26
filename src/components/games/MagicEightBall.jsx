@@ -71,29 +71,18 @@ export function MagicEightBall({ onResult }) {
                         <AnimatePresence mode="wait">
                             {answer ? (
                                 <motion.div
-                                    key="triangle"
-                                    initial={{ opacity: 0, scale: 0.5, rotateX: 60 }}
+                                    key="answer"
+                                    initial={{ opacity: 0, filter: 'blur(10px)' }}
                                     animate={{
                                         opacity: 1,
-                                        scale: 1,
-                                        rotateX: 0,
-                                        filter: ['blur(8px)', 'blur(0px)']
+                                        filter: 'blur(0px)'
                                     }}
-                                    exit={{ opacity: 0, scale: 0.8, filter: 'blur(4px)' }}
-                                    transition={{ duration: 1.2, ease: "easeOut" }}
-                                    className="relative w-24 h-24 flex items-center justify-center"
+                                    exit={{ opacity: 0, filter: 'blur(6px)' }}
+                                    transition={{ duration: 1.5, ease: "easeOut" }}
+                                    className="relative flex items-center justify-center px-4"
                                 >
-                                    {/* Blue Triangle */}
-                                    <div
-                                        className="absolute inset-0"
-                                        style={{
-                                            clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
-                                            background: 'linear-gradient(135deg, #1e40af, #172554)',
-                                            boxShadow: '0 0 15px rgba(59, 130, 246, 0.5)'
-                                        }}
-                                    />
-                                    {/* Text */}
-                                    <span className="relative z-10 text-blue-100 text-center text-[0.65rem] font-bold uppercase tracking-wider leading-tight w-16 pt-5 drop-shadow-sm select-none">
+                                    {/* Text appearing in liquid */}
+                                    <span className="text-blue-100 text-center text-sm font-bold uppercase tracking-wide leading-tight drop-shadow-[0_0_8px_rgba(59,130,246,0.8)] select-none">
                                         {answer}
                                     </span>
                                 </motion.div>

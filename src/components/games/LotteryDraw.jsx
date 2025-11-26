@@ -27,7 +27,7 @@ export function LotteryDraw({ onResult }) {
         let animationFrameId;
 
         const updateBalls = () => {
-            const speed = isDrawing ? 3 : 0.5; // Faster when drawing
+            const speed = isDrawing ? 4 : 0.8; // Faster when drawing
 
             ballsRef.current = ballsRef.current.map(ball => {
                 let { x, y, vx, vy } = ball;
@@ -82,9 +82,14 @@ export function LotteryDraw({ onResult }) {
 
         const drawNext = () => {
             if (currentIndex < finalNumbers.length) {
-                setNumbers(prev => [...prev, finalNumbers[currentIndex]]);
+                // Use a functional update to ensure we don't miss updates
+                // and explicitly check for valid number
+                const nextNum = finalNumbers[currentIndex];
+                if (nextNum !== undefined) {
+                    setNumbers(prev => [...prev, nextNum]);
+                }
                 currentIndex++;
-                setTimeout(drawNext, 800);
+                setTimeout(drawNext, 1200); // Slower pace for dramatic effect
             } else {
                 setIsDrawing(false);
                 setShowConfetti(true);
@@ -97,7 +102,7 @@ export function LotteryDraw({ onResult }) {
     };
 
     // Generate ball colors
-    const getBallColor = (index) => {
+    const getBallColor = (num) => {
         const colors = [
             'from-emerald-500 to-green-700',
             'from-blue-500 to-blue-700',
@@ -107,7 +112,8 @@ export function LotteryDraw({ onResult }) {
             'from-cyan-500 to-cyan-700',
             'from-red-500 to-red-700',
         ];
-        return colors[index % colors.length];
+        // Use the number itself to determine color so it's consistent
+        return colors[(num || 0) % colors.length];
     };
 
     return (
@@ -115,7 +121,7 @@ export function LotteryDraw({ onResult }) {
             <ConfettiEffect trigger={showConfetti} duration={3000} />
 
             {/* Lottery Machine Visual */}
-            <div className="relative w-56 h-56 sm:w-64 sm:h-64 mb-10 rounded-full border-8 border-white/10 bg-black/5 shadow-2xl overflow-hidden flex items-center justify-center backdrop-blur-sm">
+            <div className="relative w-56 h-56 sm:w-64 sm:h-64 mb-16 rounded-full border-8 border-white/10 bg-black/5 shadow-2xl overflow-hidden flex items-center justify-center backdrop-blur-sm z-20">
                 {/* Inner shine */}
                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white/20 to-transparent pointer-events-none z-20" />
 
@@ -145,12 +151,12 @@ export function LotteryDraw({ onResult }) {
             </div>
 
             {/* Result Tray */}
-            <div className="flex flex-wrap gap-3 justify-center mb-10 min-h-[80px] px-4 w-full max-w-2xl">
+            <div className="flex flex-wrap gap-3 justify-center mb-10 min-h-[80px] px-4 w-full max-w-2xl relative z-10">
                 <AnimatePresence mode="popLayout">
                     {numbers.map((num, i) => (
                         <motion.div
                             key={`${num}-${i}`}
-                            initial={{ scale: 0, y: 50, opacity: 0, rotate: -180 }}
+                            initial={{ scale: 0.5, y: -150, opacity: 0, rotate: 180 }}
                             animate={{
                                 scale: 1,
                                 y: 0,
@@ -159,8 +165,9 @@ export function LotteryDraw({ onResult }) {
                             }}
                             transition={{
                                 type: "spring",
-                                stiffness: 260,
-                                damping: 20
+                                stiffness: 200,
+                                damping: 15,
+                                mass: 1.2
                             }}
                             className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br ${getBallColor(num)} shadow-lg flex items-center justify-center border-2 border-white/20 relative overflow-hidden group shrink-0`}
                         >

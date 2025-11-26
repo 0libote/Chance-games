@@ -35,7 +35,7 @@ export function CoinFlip({ onResult }) {
         await controls.start({
             rotateY: targetRotateY,
             rotateX: [0, 720, 0], // Flip on X axis too for more dynamic movement
-            y: [0, -400, 0], // Higher bounce
+            y: [0, -200, 0], // Reduced bounce height to keep in view
             scale: [1, 1.5, 1],
             transition: {
                 duration: 2.5,

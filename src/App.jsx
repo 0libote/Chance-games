@@ -70,8 +70,8 @@ const App = () => {
                             onClick={() => setIsModalOpen(true)}
                             className="px-5 py-2.5 bg-primary text-primary-foreground rounded-xl font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all flex items-center gap-2"
                         >
-                            <activeGameData.icon size={18} />
-                            <span>{activeGameData?.name || 'Choose Game'}</span>
+                            <Shuffle size={18} />
+                            <span>Change Game</span>
                         </motion.button>
                         <ThemeToggle />
                     </div>
@@ -100,9 +100,7 @@ const App = () => {
                     </div>
                 </motion.main>
 
-                <footer className="py-6 text-center text-muted-foreground text-xs">
-                    <p>© 2024 Chance Master. All rights reserved.</p>
-                </footer>
+
             </div>
 
             <GamePickerModal

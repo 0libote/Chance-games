@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Dice6, Coins, Sparkles, Ticket, Cookie, Heart, Shuffle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sidebar } from './components/Sidebar';
+import { Sidebar } from './components/Sidebar'; // Keep for now to avoid breaking build if file still exists, but unused. Actually, let's remove it.
 import { ThemeToggle } from './components/ThemeToggle';
 import { ParticleBackground } from './components/ParticleBackground';
+import { GamePickerModal } from './components/GamePickerModal';
 import { CoinFlip } from './components/games/CoinFlip';
 import { DiceRoll } from './components/games/DiceRoll';
 import { MagicEightBall } from './components/games/MagicEightBall';
@@ -14,6 +15,7 @@ import { RandomChoice } from './components/games/RandomChoice';
 
 const App = () => {
     const [activeGame, setActiveGame] = useState('8ball');
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const games = [
         { id: '8ball', name: 'Magic 8 Ball', description: 'Ask and reveal your fate', icon: Sparkles, color: 'border-purple-500' },
@@ -38,77 +40,78 @@ const App = () => {
         }
     };
 
-    const activeBorderColor = games.find(g => g.id === activeGame)?.color || 'border-gray-500';
+    const activeGameData = games.find(g => g.id === activeGame);
 
     return (
-        <div className="min-h-screen bg-background text-foreground overflow-x-hidden relative">
+        <div className="min-h-screen bg-background text-foreground overflow-x-hidden relative selection:bg-primary/20 selection:text-primary">
             <ParticleBackground />
 
-            <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6 max-w-7xl relative z-10">
+            <div className="container mx-auto px-4 sm:px-6 py-6 max-w-5xl relative z-10 flex flex-col min-h-screen">
                 {/* Header */}
                 <motion.header
-                    className="flex flex-col md:flex-row items-center justify-between mb-8 sm:mb-12 gap-6"
+                    className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-6"
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, ease: "easeOut" }}
                 >
-                    <div className="text-center md:text-left relative group">
-                        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display text-foreground tracking-tighter relative z-10">
-                            <span className="gradient-text drop-shadow-sm">Chance Master</span>
+                    <div className="text-center sm:text-left">
+                        <h1 className="text-3xl sm:text-4xl font-display font-bold tracking-tight text-foreground">
+                            Chance Master
                         </h1>
-                        <motion.div
-                            className="absolute -inset-4 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 blur-2xl opacity-50 -z-10 rounded-full"
-                            animate={{
-                                opacity: [0.3, 0.6, 0.3],
-                                scale: [0.9, 1.1, 0.9],
-                            }}
-                            transition={{
-                                duration: 4,
-                                repeat: Infinity,
-                                ease: "easeInOut"
-                            }}
-                        />
-                        <p className="text-muted-foreground text-sm sm:text-base font-medium mt-2 tracking-wide uppercase opacity-80">
-                            Your ultimate guide to fortune and randomness
+                        <p className="text-muted-foreground text-sm font-medium mt-1">
+                            Your guide to fortune and randomness
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => setIsModalOpen(true)}
+                            className="px-5 py-2.5 bg-primary text-primary-foreground rounded-xl font-medium shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all flex items-center gap-2"
+                        >
+                            <activeGameData.icon size={18} />
+                            <span>{activeGameData?.name || 'Choose Game'}</span>
+                        </motion.button>
                         <ThemeToggle />
                     </div>
                 </motion.header>
 
-                <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
-                    <Sidebar
-                        games={games}
-                        activeGame={activeGame}
-                        setActiveGame={setActiveGame}
-                    />
+                {/* Main Game Area */}
+                <motion.main
+                    className="flex-1 flex flex-col"
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                    <div className="glass-card rounded-3xl shadow-xl flex-1 relative overflow-hidden flex flex-col min-h-[600px]">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={activeGame}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                transition={{ duration: 0.3 }}
+                                className="flex-1 w-full p-6 sm:p-10 overflow-y-auto"
+                            >
+                                {renderGameContent()}
+                            </motion.div>
+                        </AnimatePresence>
+                    </div>
+                </motion.main>
 
-                    {/* Main Game Area */}
-                    <motion.div
-                        className="flex-1 w-full lg:w-auto min-h-[500px] sm:min-h-[550px]"
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
-                    >
-                        <div className={`glass-strong border-4 ${activeBorderColor} rounded-3xl shadow-2xl h-full relative overflow-hidden neon-border`}>
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={activeGame}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -20 }}
-                                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                                    className="h-full w-full p-6 sm:p-8 md:p-10 lg:p-12 overflow-y-auto"
-                                >
-                                    {renderGameContent()}
-                                </motion.div>
-                            </AnimatePresence>
-                        </div>
-                    </motion.div>
-                </div>
+                <footer className="py-6 text-center text-muted-foreground text-xs">
+                    <p>© 2024 Chance Master. All rights reserved.</p>
+                </footer>
             </div>
+
+            <GamePickerModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                games={games}
+                activeGame={activeGame}
+                onSelectGame={setActiveGame}
+            />
         </div>
     );
 };

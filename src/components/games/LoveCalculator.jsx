@@ -47,11 +47,11 @@ export function LoveCalculator({ onResult }) {
             }
             current += 1;
             setScore(current);
-        }, 20);
+        }, 30);
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-full py-8 relative overflow-hidden">
+        <div className="flex flex-col items-center justify-center min-h-full py-8 relative overflow-hidden w-full">
             <ConfettiEffect trigger={showConfetti} duration={3000} />
 
             {/* Floating heart particles background */}
@@ -81,65 +81,70 @@ export function LoveCalculator({ onResult }) {
             ))}
 
             <div className="relative w-64 h-64 mb-12 flex items-center justify-center z-10">
-                {/* Main Heart Container */}
+                {/* Custom SVG Heart for perfect filling */}
                 <div className="relative w-full h-full drop-shadow-[0_10px_20px_rgba(236,72,153,0.3)]">
-                    {/* Background Heart (Empty) */}
-                    <Heart
-                        className="w-full h-full text-pink-900/20"
-                        strokeWidth={1}
-                    />
-
-                    {/* Filling Heart (Liquid Effect) */}
-                    <div className="absolute inset-0 overflow-hidden" style={{ clipPath: 'url(#heart-clip)' }}>
-                        <motion.div
-                            className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-pink-600 to-rose-500"
-                            style={{ height: `${score || 0}%` }}
-                            transition={{ type: "spring", stiffness: 50 }}
-                        >
-                            {/* Wave effect on top of liquid */}
-                            <motion.div
-                                className="absolute -top-4 left-0 w-[200%] h-8 bg-white/20 rounded-[50%]"
-                                animate={{ x: ["-50%", "0%"] }}
-                                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                            />
-                        </motion.div>
-                    </div>
-
-                    {/* Outline Heart */}
-                    <Heart
-                        className="absolute inset-0 w-full h-full text-pink-500/50"
-                        strokeWidth={2}
-                    />
-
-                    {/* Clip Path Definition */}
-                    <svg width="0" height="0">
+                    <svg viewBox="0 0 24 24" className="w-full h-full overflow-visible">
                         <defs>
-                            <clipPath id="heart-clip" clipPathUnits="objectBoundingBox">
-                                <path d="M0.5,0.18 C0.5,0.18 0.15,-0.15 0,0.25 C-0.15,0.65 0.5,1 0.5,1 C0.5,1 1.15,0.65 1,0.25 C0.85,-0.15 0.5,0.18 0.5,0.18" transform="scale(0.8, 0.8) translate(0.125, 0.1)" />
-                                {/* Note: SVG path for heart is complex to map perfectly to Lucide icon without exact path data. 
-                                    Using a simplified approximation or just masking with the icon itself if possible.
-                                    Actually, better approach for perfect match: Use the SVG as a mask.
-                                */}
-                            </clipPath>
+                            <mask id="heartMask">
+                                <path
+                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                                    fill="white"
+                                />
+                            </mask>
+                            <linearGradient id="heartGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+                                <stop offset="0%" stopColor="#db2777" /> {/* pink-600 */}
+                                <stop offset="100%" stopColor="#f43f5e" /> {/* rose-500 */}
+                            </linearGradient>
                         </defs>
-                    </svg>
 
-                    {/* Alternative Fill Strategy: Mask Image */}
-                    <div
-                        className="absolute inset-0 bg-gradient-to-t from-pink-600 to-rose-500 transition-all duration-100"
-                        style={{
-                            height: `${score || 0}%`,
-                            maskImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="black" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>')`,
-                            maskSize: 'contain',
-                            maskRepeat: 'no-repeat',
-                            maskPosition: 'center',
-                            WebkitMaskImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="black" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>')`,
-                            WebkitMaskSize: 'contain',
-                            WebkitMaskRepeat: 'no-repeat',
-                            WebkitMaskPosition: 'center',
-                            bottom: 0
-                        }}
-                    />
+                        {/* Background Heart Outline */}
+                        <path
+                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1"
+                            className="text-pink-900/20"
+                        />
+
+                        {/* Liquid Fill */}
+                        <g mask="url(#heartMask)">
+                            <rect x="0" y="0" width="24" height="24" fill="transparent" />
+                            <motion.rect
+                                x="0"
+                                y={24 - (24 * (score || 0) / 100)}
+                                width="24"
+                                height="24"
+                                fill="url(#heartGradient)"
+                                initial={{ y: 24 }}
+                                animate={{ y: 24 - (24 * (score || 0) / 100) }}
+                                transition={{ type: "spring", stiffness: 20, damping: 10 }}
+                            />
+                            {/* Wave Effect */}
+                            <motion.path
+                                d="M-12,0 C-6,2 0,-2 6,0 C12,2 18,-2 24,0 V24 H-12 Z"
+                                fill="white"
+                                fillOpacity="0.2"
+                                initial={{ x: 0, y: 24 }}
+                                animate={{
+                                    x: [-12, 0],
+                                    y: 24 - (24 * (score || 0) / 100) - 1
+                                }}
+                                transition={{
+                                    x: { repeat: Infinity, duration: 2, ease: "linear" },
+                                    y: { type: "spring", stiffness: 20, damping: 10 }
+                                }}
+                            />
+                        </g>
+
+                        {/* Foreground Heart Outline */}
+                        <path
+                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            className="text-pink-500/50"
+                        />
+                    </svg>
                 </div>
 
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -177,7 +182,7 @@ export function LoveCalculator({ onResult }) {
                     "px-10 py-4 rounded-full font-display font-bold text-lg tracking-wider transition-all duration-300 z-10",
                     isCalculating
                         ? "bg-secondary text-muted-foreground cursor-not-allowed"
-                        : "bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-[0_0_30px_-5px_hsl(var(--primary)/0.5)] hover:shadow-[0_0_50px_-5px_hsl(var(--primary)/0.7)] hover:scale-105 active:scale-95"
+                        : "bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] shadow-primary/25"
                 )}
             >
                 {isCalculating ? 'CALCULATING...' : score !== null ? 'CALCULATE AGAIN' : 'CALCULATE LOVE'}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../lib/utils';
+import { Sparkles } from 'lucide-react';
 
 export function MagicEightBall({ onResult }) {
     const [isShaking, setIsShaking] = useState(false);
@@ -30,31 +31,31 @@ export function MagicEightBall({ onResult }) {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-full py-6 relative">
+        <div className="flex flex-col items-center justify-center min-h-full py-8 relative w-full">
             {/* 8 Ball Container */}
-            <div className="relative w-72 h-72 sm:w-80 sm:h-80 mb-8 flex items-center justify-center drop-shadow-2xl">
+            <div className="relative group cursor-pointer" onClick={shakeBall}>
                 <motion.div
-                    className="w-full h-full rounded-full relative"
+                    className="w-72 h-72 sm:w-80 sm:h-80 rounded-full relative z-10"
                     style={{
-                        background: 'radial-gradient(circle at 30% 30%, #1a1a1a, #000000)',
-                        boxShadow: '0 30px 80px rgba(0, 0, 0, 0.8), inset 0 -20px 40px rgba(0, 0, 0, 0.8), inset 0 10px 20px rgba(255,255,255,0.1)'
+                        background: 'radial-gradient(circle at 35% 35%, #333, #000)',
+                        boxShadow: '0 20px 50px rgba(0,0,0,0.5), inset 0 -10px 20px rgba(0,0,0,0.8), inset 0 10px 20px rgba(255,255,255,0.2)'
                     }}
                     animate={isShaking ? {
-                        x: [0, -15, 15, -15, 15, -10, 10, -5, 5, 0],
-                        y: [0, -10, 10, -10, 10, -5, 5, 0],
-                        rotate: [0, -8, 8, -8, 8, -5, 5, -2, 2, 0],
+                        x: [0, -10, 10, -10, 10, -5, 5, -2, 2, 0],
+                        y: [0, -5, 5, -5, 5, -2, 2, 0],
+                        rotate: [0, -5, 5, -5, 5, -2, 2, 0],
                     } : {}}
                     transition={{ duration: 0.5, repeat: isShaking ? 4 : 0 }}
                 >
                     {/* Surface Glare */}
-                    <div className="absolute top-8 left-8 w-24 h-16 rounded-full bg-white/10 blur-xl transform -rotate-45" />
+                    <div className="absolute top-10 left-10 w-20 h-12 rounded-full bg-gradient-to-br from-white/20 to-transparent blur-md transform -rotate-45" />
 
                     {/* The Window */}
-                    <div className="w-32 h-32 sm:w-36 sm:h-36 rounded-full bg-black border-6 border-gray-900/50 flex items-center justify-center overflow-hidden relative shadow-[inset_0_0_20px_rgba(0,0,0,1)]">
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-36 h-36 rounded-full bg-black border-[6px] border-[#1a1a1a] flex items-center justify-center overflow-hidden shadow-[inset_0_0_20px_rgba(0,0,0,1)]">
                         {/* Liquid Background */}
                         <div className="absolute inset-0 bg-[#000022]">
                             <motion.div
-                                className="absolute inset-0 opacity-30"
+                                className="absolute inset-0 opacity-40"
                                 animate={{
                                     background: [
                                         'radial-gradient(circle at 50% 50%, #1a1a4a 0%, transparent 70%)',
@@ -63,7 +64,7 @@ export function MagicEightBall({ onResult }) {
                                         'radial-gradient(circle at 50% 50%, #1a1a4a 0%, transparent 70%)',
                                     ]
                                 }}
-                                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
                             />
                         </div>
 
@@ -71,16 +72,15 @@ export function MagicEightBall({ onResult }) {
                             {answer ? (
                                 <motion.div
                                     key="triangle"
-                                    initial={{ opacity: 0, scale: 0.5, rotate: 180, y: 50 }}
+                                    initial={{ opacity: 0, scale: 0.5, rotateX: 60 }}
                                     animate={{
                                         opacity: 1,
                                         scale: 1,
-                                        rotate: 0,
-                                        y: 0,
-                                        filter: ['blur(10px)', 'blur(0px)']
+                                        rotateX: 0,
+                                        filter: ['blur(8px)', 'blur(0px)']
                                     }}
-                                    exit={{ opacity: 0, scale: 0.5, filter: 'blur(10px)' }}
-                                    transition={{ duration: 1.5, ease: "easeOut" }}
+                                    exit={{ opacity: 0, scale: 0.8, filter: 'blur(4px)' }}
+                                    transition={{ duration: 1.2, ease: "easeOut" }}
                                     className="relative w-24 h-24 flex items-center justify-center"
                                 >
                                     {/* Blue Triangle */}
@@ -88,12 +88,12 @@ export function MagicEightBall({ onResult }) {
                                         className="absolute inset-0"
                                         style={{
                                             clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
-                                            background: 'linear-gradient(to bottom, #1e3a8a, #172554)',
-                                            boxShadow: '0 0 20px #3b82f6'
+                                            background: 'linear-gradient(135deg, #1e40af, #172554)',
+                                            boxShadow: '0 0 15px rgba(59, 130, 246, 0.5)'
                                         }}
                                     />
                                     {/* Text */}
-                                    <span className="relative z-10 text-blue-100 text-center text-[0.6rem] font-bold uppercase tracking-wider leading-tight w-14 pt-4 drop-shadow-md">
+                                    <span className="relative z-10 text-blue-100 text-center text-[0.65rem] font-bold uppercase tracking-wider leading-tight w-16 pt-5 drop-shadow-sm select-none">
                                         {answer}
                                     </span>
                                 </motion.div>
@@ -105,44 +105,41 @@ export function MagicEightBall({ onResult }) {
                                     exit={{ opacity: 0 }}
                                     className="w-20 h-20 rounded-full bg-white flex items-center justify-center shadow-lg relative"
                                 >
-                                    <span className="text-6xl font-black text-black">8</span>
+                                    <span className="text-6xl font-black text-black select-none">8</span>
                                 </motion.div>
                             )}
                         </AnimatePresence>
 
                         {/* Glass Reflection over window */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-full pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent rounded-full pointer-events-none" />
                     </div>
                 </motion.div>
 
                 {/* Shadow */}
-                <motion.div
-                    className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-48 h-8 bg-black/50 blur-xl rounded-full"
-                    animate={{
-                        scale: isShaking ? [1, 0.8, 1.2, 1] : 1,
-                        opacity: isShaking ? [0.5, 0.3, 0.5] : 0.5,
-                    }}
-                />
+                <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 w-40 h-6 bg-black/30 blur-xl rounded-full transition-all duration-300 group-hover:bg-black/40 group-hover:w-48" />
             </div>
 
-            <div className="w-full max-w-md space-y-6 px-4">
-                <input
-                    type="text"
-                    value={question}
-                    onChange={(e) => setQuestion(e.target.value)}
-                    placeholder="Ask a Yes/No question..."
-                    className="w-full px-6 py-4 glass border-2 border-white/10 rounded-2xl focus:outline-none focus:border-primary/50 text-center text-lg shadow-inner transition-all placeholder:text-muted-foreground/50"
-                    onKeyDown={(e) => e.key === 'Enter' && shakeBall()}
-                />
+            <div className="w-full max-w-md space-y-6 px-4 mt-8">
+                <div className="relative">
+                    <input
+                        type="text"
+                        value={question}
+                        onChange={(e) => setQuestion(e.target.value)}
+                        placeholder="Ask a Yes/No question..."
+                        className="w-full px-6 py-4 bg-card border-2 border-border rounded-2xl focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 text-center text-lg shadow-sm transition-all placeholder:text-muted-foreground/50"
+                        onKeyDown={(e) => e.key === 'Enter' && shakeBall()}
+                    />
+                    <Sparkles className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground/50" size={20} />
+                </div>
 
                 <button
                     onClick={shakeBall}
                     disabled={isShaking || !question.trim()}
                     className={cn(
-                        "w-full px-8 py-4 rounded-xl font-display font-bold text-lg tracking-wider transition-all duration-300",
+                        "w-full px-8 py-4 rounded-xl font-display font-bold text-lg tracking-wider transition-all duration-200 shadow-lg",
                         isShaking || !question.trim()
-                            ? "bg-secondary/50 text-muted-foreground cursor-not-allowed"
-                            : "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-[0_0_30px_-5px_hsl(var(--primary)/0.5)] hover:shadow-[0_0_50px_-5px_hsl(var(--primary)/0.7)] hover:scale-[1.02] active:scale-[0.98]"
+                            ? "bg-secondary text-muted-foreground cursor-not-allowed shadow-none"
+                            : "bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] shadow-primary/25"
                     )}
                 >
                     {isShaking ? 'CONSULTING SPIRITS...' : 'SHAKE 8 BALL'}

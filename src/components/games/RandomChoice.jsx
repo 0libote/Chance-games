@@ -1,112 +1,106 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useAnimation, useMotionValue, useTransform } from 'framer-motion';
 import { cn } from '../../lib/utils';
 import { ConfettiEffect } from '../ConfettiEffect';
 
 export function RandomChoice({ onResult }) {
     const [isChoosing, setIsChoosing] = useState(false);
-    const [result, setResult] = useState('');
-    const [displayText, setDisplayText] = useState('');
+    const [result, setResult] = useState(null);
     const [showConfetti, setShowConfetti] = useState(false);
 
-    const choices = ['Yes', 'No'];
+    // We'll use a long strip of "Yes" and "No" for the rolling effect
+    const stripLength = 40;
+    const itemHeight = 120; // Height of each item in pixels
+    const choices = Array.from({ length: stripLength }).map((_, i) => i % 2 === 0 ? 'Yes' : 'No');
 
-    const makeChoice = () => {
+    const controls = useAnimation();
+    const containerRef = useRef(null);
+
+    const makeChoice = async () => {
         if (isChoosing) return;
         setIsChoosing(true);
         setShowConfetti(false);
-        setResult('');
+        setResult(null);
 
-        let count = 0;
-        const maxCount = 40;
-        const baseInterval = 30;
+        // Randomize the landing position (must be near the end of the strip)
+        // Ensure we land on a valid item center
+        // We want to land on index between stripLength - 10 and stripLength - 2
+        const minIndex = stripLength - 12;
+        const maxIndex = stripLength - 2;
+        const landingIndex = Math.floor(Math.random() * (maxIndex - minIndex + 1)) + minIndex;
 
-        const spin = () => {
-            setDisplayText(choices[Math.floor(Math.random() * choices.length)]);
-            count++;
+        const landingPosition = -(landingIndex * itemHeight);
+        const finalResult = choices[landingIndex];
 
-            if (count >= maxCount) {
-                setIsChoosing(false);
-                const final = choices[Math.floor(Math.random() * choices.length)];
-                setResult(final);
-                setDisplayText(final);
-                setShowConfetti(true);
-                if (onResult) onResult(final);
-            } else {
-                const progress = count / maxCount;
-                const easedInterval = baseInterval + (progress * progress * 150);
-                setTimeout(spin, easedInterval);
+        // Reset to start
+        await controls.set({ y: 0 });
+
+        // Animate to the landing position
+        await controls.start({
+            y: landingPosition,
+            transition: {
+                duration: 3,
+                ease: [0.1, 0.8, 0.2, 1], // Custom cubic bezier for "spin down" feel
             }
-        };
+        });
 
-        spin();
+        setResult(finalResult);
+        setIsChoosing(false);
+        setShowConfetti(true);
+        if (onResult) onResult(finalResult);
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-full py-8 relative">
+        <div className="flex flex-col items-center justify-center min-h-full py-8 relative w-full">
             <ConfettiEffect trigger={showConfetti} duration={2500} />
 
-            <motion.div
-                className="w-full max-w-md h-48 flex items-center justify-center mb-12 glass-strong border-2 rounded-3xl shadow-2xl overflow-hidden relative mx-4 neon-border"
-                animate={isChoosing ? {
-                    boxShadow: [
-                        '0 0 20px hsl(var(--primary) / 0.3)',
-                        '0 0 40px hsl(var(--primary) / 0.5)',
-                        '0 0 20px hsl(var(--primary) / 0.3)',
-                    ]
-                } : {}}
-                transition={{ duration: 0.8, repeat: isChoosing ? Infinity : 0 }}
-            >
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/10 to-primary/10" />
+            <div className="relative w-full max-w-md h-48 mb-12 mx-4 perspective-1000">
+                {/* Frame/Window */}
+                <div className="absolute inset-0 z-20 pointer-events-none border-4 border-primary/20 rounded-3xl glass-strong shadow-2xl">
+                    {/* Gradient Overlays for depth */}
+                    <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-background to-transparent z-10" />
+                    <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background to-transparent z-10" />
 
-                {/* Animated indicators */}
-                {isChoosing && (
-                    <>
-                        <motion.div
-                            className="absolute left-0 top-0 bottom-0 w-1 bg-primary"
-                            animate={{ opacity: [0.5, 1, 0.5] }}
-                            transition={{ duration: 0.5, repeat: Infinity }}
-                        />
-                        <motion.div
-                            className="absolute right-0 top-0 bottom-0 w-1 bg-primary"
-                            animate={{ opacity: [0.5, 1, 0.5] }}
-                            transition={{ duration: 0.5, repeat: Infinity, delay: 0.25 }}
-                        />
-                    </>
-                )}
+                    {/* Center Highlight Line */}
+                    <div className="absolute top-1/2 left-4 right-4 h-[2px] bg-primary/50 -translate-y-1/2 z-20 shadow-[0_0_10px_rgba(var(--primary),0.5)]" />
+                </div>
 
-                <AnimatePresence mode="wait">
-                    <motion.span
-                        key={displayText || 'start'}
-                        initial={{ y: -50, opacity: 0, scale: 0.5 }}
-                        animate={{ y: 0, opacity: 1, scale: 1 }}
-                        exit={{ y: 50, opacity: 0, scale: 0.5 }}
-                        transition={{
-                            duration: isChoosing ? 0.1 : 0.4,
-                            ease: [0.34, 1.56, 0.64, 1]
-                        }}
-                        className={cn(
-                            "text-6xl sm:text-7xl md:text-8xl font-display font-black text-center px-4 z-10",
-                            result && !isChoosing
-                                ? result === 'Yes'
-                                    ? "text-green-500"
-                                    : "text-red-500"
-                                : "text-foreground"
-                        )}
+                {/* Rolling Strip */}
+                <div className="w-full h-full overflow-hidden rounded-3xl bg-black/5 relative">
+                    <motion.div
+                        animate={controls}
+                        initial={{ y: 0 }}
+                        className="flex flex-col items-center w-full"
+                        style={{ paddingTop: 'calc(50% - 60px)' }} // Center the first item
                     >
-                        {displayText || '?'}
-                    </motion.span>
-                </AnimatePresence>
-            </motion.div>
+                        {choices.map((choice, i) => (
+                            <div
+                                key={i}
+                                className="flex items-center justify-center w-full shrink-0"
+                                style={{ height: itemHeight }}
+                            >
+                                <span className={cn(
+                                    "text-6xl sm:text-7xl font-display font-black tracking-tight",
+                                    choice === 'Yes' ? "text-emerald-500" : "text-rose-500",
+                                    // Add blur effect based on speed (simulated by just blurring everything during motion if we wanted, 
+                                    // but pure motion blur is hard. We'll stick to clean text)
+                                )}>
+                                    {choice}
+                                </span>
+                            </div>
+                        ))}
+                    </motion.div>
+                </div>
+            </div>
 
             <button
                 onClick={makeChoice}
                 disabled={isChoosing}
                 className={cn(
-                    "px-12 py-4 rounded-full font-display font-bold text-lg tracking-wider transition-all duration-300",
+                    "px-12 py-4 rounded-full font-display font-bold text-lg tracking-wider transition-all duration-300 shadow-lg",
                     isChoosing
-                        ? "bg-secondary text-muted-foreground cursor-not-allowed"
-                        : "bg-gradient-to-r from-emerald-600 to-green-600 text-white shadow-[0_0_30px_-5px_rgba(16,185,129,0.5)] hover:shadow-[0_0_50px_-5px_rgba(16,185,129,0.7)] hover:scale-105 active:scale-95"
+                        ? "bg-secondary text-muted-foreground cursor-not-allowed shadow-none"
+                        : "bg-gradient-to-r from-emerald-600 to-green-600 text-white shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-[1.02] active:scale-[0.98]"
                 )}
             >
                 {isChoosing ? 'DECIDING...' : result ? 'ASK AGAIN' : 'YES OR NO?'}
